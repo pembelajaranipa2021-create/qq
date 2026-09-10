@@ -1,0 +1,138 @@
+--- src/components/AdventureGameView.tsx
++++ src/components/AdventureGameView.tsx
+@@ -2,126 +2,7 @@
+ import { soundEffects } from '../utils/soundEffects';
+ import { Home, ShoppingCart, ChevronRight, Package, Heart, Shield, Award, Crown, TrendingUp, AlertTriangle, Trophy } from 'lucide-react';
++import { PRICES, ALL_MAPS, QUESTS } from '../data/adventureMaps';
+ 
+-const PRICES = { rice: 15000, gold: 1200000 };
+-
+-const BUILDING_IMAGES = [
+-  'https://lh3.googleusercontent.com/d/16aWAi0vcYxVCt2u4rs5tj5IeQltyrlnS',
+-  'https://lh3.googleusercontent.com/d/1G0oTCnDvi8UqBZJkTmeXVjslXJPgqw9e',
+-  'https://lh3.googleusercontent.com/d/1GL57YP-dT7QDcBI1b-q4rKoDu0ltVqyH',
+-  'https://lh3.googleusercontent.com/d/1MKAHRAEQKTd5NCPxwzCcz1kOPdFWFc3S',
+-  'https://lh3.googleusercontent.com/d/1SujXLePyPZPBmyUMej6gn4_-8OIVkNRG',
+-  'https://lh3.googleusercontent.com/d/1TZrdKOKrkWta6JEZ5DLukqojDBaVX6sZ',
+-  'https://lh3.googleusercontent.com/d/1ZrQtcW2J_nj5TYSFigBXebYc8b34g1vc',
+-  'https://lh3.googleusercontent.com/d/1aI478_vANn0NLdnSujonPZB7ttv4NhWK',
+-  'https://lh3.googleusercontent.com/d/1d0G08TUigM9fzBsuDgm0hQn-R5G37_gx',
+-  'https://lh3.googleusercontent.com/d/1eZjcFo0YAcUkxtSd9sunka7DLlTcVNjF',
+-  'https://lh3.googleusercontent.com/d/1sFpdCNtAA-OfXrKGGzgM2iYX_1fOo8Ng',
+-  'https://lh3.googleusercontent.com/d/1sKX9Jru7jxxooRAeo333V5BQ5ICS9flX'
+-];
+-
+-const ALL_MAPS = [
+-  { name: 'Dusun Hijau', icon: 'leaf', color: 'emerald', 
+-    npcs: [
+-      { id: 'pak_haji', name: 'Haji Sulaiman', x: 1, y: 2, type: 'MUZAKKI', quest: 'TANI', avatar: 'https://lh3.googleusercontent.com/d/1r8vZJoaG755ifkA_qtjomz_pHA_QxW2U' },
+-      { id: 'yatim_piatu', name: 'Pengurus Yatim', x: 3, y: 2, type: 'MUSTAHIK', cost: 2500000, avatar: 'https://lh3.googleusercontent.com/d/1BELS56vArZHbdCd5V_at9CRNC_mnSIoe' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[0] }, // Next to NPC 1
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[1] }, // Next to NPC 2
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[2] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[3] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[4] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[5] }
+-    ]
+-  },
+-  { name: 'Pasar Rakyat', icon: 'shopping-bag', color: 'amber', 
+-    npcs: [
+-      { id: 'pedagang', name: 'Saudagar Malik', x: 1, y: 2, type: 'MUZAKKI', quest: 'DAGANG', avatar: 'https://lh3.googleusercontent.com/d/1J4VdU40e53G0GhH1XBbe9jK45WBnJpGt' },
+-      { id: 'kuli_panggul', name: 'Pak Darmono', x: 3, y: 2, type: 'MUSTAHIK', cost: 4000000, avatar: 'https://lh3.googleusercontent.com/d/1JcgTAjDbZuFf_XdbqbpzAZAEitoWi-Xn' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[6] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[7] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[8] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[9] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[10] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[11] }
+-    ]
+-  },
+-  { name: 'Pesisir Karang', icon: 'anchor', color: 'blue', 
+-    npcs: [
+-      { id: 'juragan_kapal', name: 'Kapten Idris', x: 1, y: 2, type: 'MUZAKKI', quest: 'NELAYAN', avatar: 'https://lh3.googleusercontent.com/d/1VsL8lYNIIs-EWl2iQnELlNbCzsA2kg1k' },
+-      { id: 'janda_nelayan', name: 'Ibu Fatimah', x: 3, y: 2, type: 'MUSTAHIK', cost: 3500000, avatar: 'https://lh3.googleusercontent.com/d/1W1p5juBOk83DTxshzkl6DlgMaroffLbO' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[5] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[4] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[3] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[2] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[1] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[0] }
+-    ]
+-  },
+-  { name: 'Lembah Subur', icon: 'wheat', color: 'lime', 
+-    npcs: [
+-      { id: 'peternak', name: 'Pak Bejo', x: 1, y: 2, type: 'MUZAKKI', quest: 'TERNAK', avatar: 'https://lh3.googleusercontent.com/d/1fjSJlGGv_VgsBVNbTD5Sln11B_pGGgNO' },
+-      { id: 'sekolah_desa', name: 'Guru Madrasah', x: 3, y: 2, type: 'MUSTAHIK', cost: 5000000, avatar: 'https://lh3.googleusercontent.com/d/1qS1exDLo81Qnz7u3nNg-e-KCDkvXS7mE' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[11] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[10] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[9] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[8] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[7] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[6] }
+-    ]
+-  },
+-  { name: 'Kota Niaga', icon: 'globe', color: 'indigo', 
+-    npcs: [
+-      { id: 'toko_emas', name: 'Nyonya Tan', x: 1, y: 2, type: 'MUZAKKI', quest: 'EMAS_MURNI', avatar: 'https://lh3.googleusercontent.com/d/19RcdKB--1tcxtDq_NVzYS8zAjC47tsaF' },
+-      { id: 'panti_jompo', name: 'Pengurus Lansia', x: 3, y: 2, type: 'MUSTAHIK', cost: 6000000, avatar: 'https://lh3.googleusercontent.com/d/1x_T1aLP_KZkXnbXB0_p1ujLhtvlYA11y' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[2] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[3] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[4] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[5] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[6] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[7] }
+-    ]
+-  },
+-  { name: 'Hutan Damai', icon: 'tree-pine', color: 'emerald', 
+-    npcs: [
+-      { id: 'pencari_madu', name: 'Kang Asep', x: 1, y: 2, type: 'MUZAKKI', quest: 'MADU', avatar: 'https://lh3.googleusercontent.com/d/19RcdKB--1tcxtDq_NVzYS8zAjC47tsaF' },
+-      { id: 'pengungsi', name: 'Ketua Kamp', x: 3, y: 2, type: 'MUSTAHIK', cost: 4500000, avatar: 'https://lh3.googleusercontent.com/d/1BELS56vArZHbdCd5V_at9CRNC_mnSIoe' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[8] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[9] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[10] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[11] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[0] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[1] }
+-    ]
+-  },
+-  { name: 'Pusat Kerajaan', icon: 'crown', color: 'purple', 
+-    npcs: [
+-      { id: 'menteri', name: 'Patih Kerajaan', x: 1, y: 2, type: 'MUZAKKI', quest: 'NEGARA', avatar: 'https://lh3.googleusercontent.com/d/1J4VdU40e53G0GhH1XBbe9jK45WBnJpGt' },
+-      { id: 'masjid_agung', name: 'Marbot Masjid', x: 3, y: 2, type: 'MUSTAHIK', cost: 10000000, avatar: 'https://lh3.googleusercontent.com/d/1JcgTAjDbZuFf_XdbqbpzAZAEitoWi-Xn' }
+-    ],
+-    buildings: [
+-      { id: 'b1', x: 1, y: 1, image: BUILDING_IMAGES[11] },
+-      { id: 'b2', x: 3, y: 1, image: BUILDING_IMAGES[2] },
+-      { id: 'b3', x: 1, y: 3, image: BUILDING_IMAGES[3] },
+-      { id: 'b4', x: 3, y: 3, image: BUILDING_IMAGES[4] },
+-      { id: 'b5', x: 0, y: 1, image: BUILDING_IMAGES[5] },
+-      { id: 'b6', x: 4, y: 1, image: BUILDING_IMAGES[6] }
+-    ]
+-  }
+-];
+-
+-const QUESTS = {
+-  'TANI': { dialog: "Hasil panen padi kami melimpah tahun ini, total 10 ton. Berapa zakatnya jika menggunakan irigasi alami (5%)?", target: 500, unit: 'rice', label: 'Beras', formula: 'Hitung 5% dari 10.000 kg' },
+-  'DAGANG': { dialog: "Alhamdulillah, keuntungan emas dari perdagangan tahun ini mencapai 200 gram. Berapa zakat mal saya (2.5%)?", target: 5, unit: 'gold', label: 'Emas', formula: 'Hitung 2.5% dari 200 gram' },
+-  'NELAYAN': { dialog: "Tangkapan ikan sedang ramai, pendapatan bersih Rp 60.000.000. Bantu hitung zakatnya (2.5%).", target: 1500000, unit: 'cash', label: 'Rupiah', formula: 'Hitung 2.5% dari Rp 60.000.000' },
+-  'TERNAK': { dialog: "Ternak kami berkembang pesat. Hasil penjualan mencapai Rp 80.000.000. Berapa zakatnya (2.5%)?", target: 2000000, unit: 'cash', label: 'Rupiah', formula: 'Hitung 2.5% dari Rp 80.000.000' },
+-  'EMAS_MURNI': { dialog: "Simpanan emas saya mencapai 400 gram tahun ini. Hitung zakat mal-nya (2.5%)!", target: 10, unit: 'gold', label: 'Emas', formula: 'Hitung 2.5% dari 400 gram' },
+-  'MADU': { dialog: "Hutan memberikan hasil madu 200 kg. Berapa zakat pertaniannya (10% karena alami)?", target: 20, unit: 'rice', label: 'Beras', formula: 'Hitung 10% dari 200 kg' },
+-  'NEGARA': { dialog: "Negara memberikan hibah sebesar Rp 400.000.000. Berapa zakat/pajaknya (2.5%)?", target: 10000000, unit: 'cash', label: 'Rupiah', formula: 'Hitung 2.5% dari Rp 400.000.000' }
+-};
+-
+ const LEVELS = {
+   'JUNIOR': { label: 'Junior', months: 4, icon: Shield, cityCount: 3, assistance: 'FULL', color: 'emerald', desc: 'Krisis: Bulan 3.', crisisMonths: [3] },
+   'SENIOR': { label: 'Senior', months: 8, icon: Award, cityCount: 5, assistance: 'HALF', color: 'blue', desc: 'Krisis: Bulan 3, 6.', crisisMonths: [3, 6] },

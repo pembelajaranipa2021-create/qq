@@ -1,0 +1,28 @@
+--- server.ts
++++ server.ts
+@@ -624,6 +624,25 @@
+   });
+ });
+ 
++// Global Room Timer for Adventure Mode
++setInterval(() => {
++  const now = Date.now();
++  Object.values(rooms).forEach(room => {
++    if (room.status === 'playing' && room.gameType === 'adventure' && room.adventureState) {
++       if (now >= room.adventureState.cycleEndTime) {
++          if (room.adventureState.cycle < 3) {
++             room.adventureState.cycle++;
++             room.adventureState.cycleEndTime = now + 5 * 60 * 1000;
++             room.adventureState.completedNpcs = []; // Reset completed NPCs for next cycle
++             broadcastToRoom(room.id, { type: 'ADVENTURE_CYCLE_UPDATE', payload: room.adventureState });
++          } else {
++             room.status = 'game_over';
++             broadcastToRoom(room.id, { type: 'GAME_OVER', payload: getCleanRoomState(room) });
++          }
++       }
++    }
++  });
++}, 1000);
++
+ // Vite middleware for development
+ if (process.env.NODE_ENV !== 'production') {

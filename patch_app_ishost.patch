@@ -1,0 +1,10 @@
+--- src/App.tsx
++++ src/App.tsx
+@@ -872,6 +872,7 @@
+             isMultiplayer={true}
+             socket={socketRef.current}
+             roomId={currentRoom.id}
++            isHost={currentRoom.hostId === currentUserId}
+             playerId={currentUserId}
+             otherPlayers={currentRoom.adventurePlayers || []}
+             adventureState={currentRoom.adventureState}

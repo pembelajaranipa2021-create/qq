@@ -1,0 +1,35 @@
+--- server.ts
++++ server.ts
+@@ -277,6 +277,32 @@
+             return;
+           }
+ 
++          if (room.gameType === 'adventure') {
++            const playerCount = Object.keys(room.players).length;
++            // Only 4 maps, and duplicate NPCs so total is 2 * playerCount for MUSTAHIK and MUZAKKI
++            // Wait, we need to generate activeMaps dynamically and scale NPCs.
++            const baseMaps = JSON.parse(JSON.stringify(ALL_MAPS.slice(0, 4)));
++            
++            // Create adventure state
++            room.adventureState = {
++              cycle: 1,
++              cycleEndTime: Date.now() + 5 * 60 * 1000, // 5 minutes
++              activeMaps: baseMaps, // We will refine the NPC duplication later
++              completedNpcs: [],
++              playerStats: {}
++            };
++            
++            Object.keys(room.players).forEach(pId => {
++               room.adventureState!.playerStats[pId] = { trust: 60, population_saved: 0, cash: 0, rice: 0, gold: 0, score: 0 };
++            });
++            room.status = 'playing';
++            broadcastToRoom(roomId, { type: 'GAME_STARTED', payload: { room: getCleanRoomState(room) } });
++            
++            // We will also need a timer to auto-advance cycles.
++            
++            break;
++          }
++
+           room.questions = getQuestionsForGameSession();
+           room.status = 'playing';
+           room.currentQuestionIndex = 0;

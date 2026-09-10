@@ -1,0 +1,46 @@
+--- src/components/AdventureGameView.tsx
++++ src/components/AdventureGameView.tsx
+@@ -40,6 +40,7 @@
+ 
+   const [modalState, setModalState] = useState<{isOpen: boolean, type: 'NPC' | 'CRISIS', data: any, reason?: string}>({isOpen: false, type: 'NPC', data: null});
+   const [questInput, setQuestInput] = useState('');
++  const [timeLeftMs, setTimeLeftMs] = useState(0);
+ 
+   // Multiplayer sync
+   useEffect(() => {
+@@ -66,6 +67,23 @@
+         }
+      }
+   }, [isMultiplayer, adventureState, gameState, playerId]);
++  
++  // Multiplayer Timer
++  useEffect(() => {
++      let interval: any;
++      if (isMultiplayer && adventureState && gameState === 'PLAYING') {
++         interval = setInterval(() => {
++            const remain = Math.max(0, adventureState.cycleEndTime - Date.now());
++            setTimeLeftMs(remain);
++         }, 1000);
++      }
++      return () => clearInterval(interval);
++  }, [isMultiplayer, adventureState, gameState]);
++  
++  const formatTime = (ms: number) => {
++      const s = Math.floor(ms / 1000);
++      return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
++  };
+ 
+   const startGame = (lvl: keyof typeof LEVELS) => {
+     soundEffects.playVictoryFanfare();
+@@ -282,7 +300,10 @@
+             <button onClick={onGoHome} className="w-10 h-10 bg-[#E07A5F] text-white rounded-xl border-2 border-[#3D405B] flex items-center justify-center hover:scale-105 transition-transform"><Home size={18} /></button>
+             <div>
+               <h2 className="font-black text-sm leading-tight uppercase">{LEVELS[level].label}</h2>
+-              <p className="text-[10px] text-[#3D405B]/70 font-bold uppercase tracking-wider">Bulan {month + 1}/{maxMonths}</p>
++              <p className="text-[10px] text-[#3D405B]/70 font-bold uppercase tracking-wider">
++                {isMultiplayer ? `Siklus ${month + 1}/3` : `Bulan ${month + 1}/${maxMonths}`}
++                {isMultiplayer && <span className="ml-2 text-rose-500">{formatTime(timeLeftMs)}</span>}
++              </p>
+             </div>
+           </div>
+           <div className="flex-1 grid grid-cols-3 gap-2">

@@ -1,0 +1,16 @@
+--- src/App.tsx
++++ src/App.tsx
+@@ -110,6 +110,13 @@
+           case 'ROOM_UPDATE':
+             setCurrentRoom(payload);
+             break;
++            
++          case 'ADVENTURE_CYCLE_UPDATE':
++            setCurrentRoom(prev => {
++               if (!prev) return prev;
++               return { ...prev, adventureState: payload };
++            });
++            break;
+ 
+           case 'GAME_STARTED':
+             setCurrentRoom(payload.room);

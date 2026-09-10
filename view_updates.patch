@@ -1,0 +1,49 @@
+--- src/components/AdventureGameView.tsx
++++ src/components/AdventureGameView.tsx
+@@ -21,8 +21,9 @@
+ interface AdventureStats { trust: number; population_saved: number; cash: number; rice: number; gold: number }
+ 
+ export function AdventureGameView({ 
+-  playerName, playerAvatar, isMultiplayer = false, socket = null, roomId = null, playerId = null, otherPlayers = [], onGoHome
++  playerName, playerAvatar, isMultiplayer = false, socket = null, roomId = null, playerId = null, otherPlayers = [], adventureState = null, onGoHome
+ }: any) {
+   const [gameState, setGameState] = useState<'START' | 'PLAYING' | 'ENDING'>('START');
+   const [level, setLevel] = useState<keyof typeof LEVELS>('JUNIOR');
+   const [month, setMonth] = useState(0);
+@@ -53,6 +54,23 @@
+       }));
+     }
+   }, [playerPos, currentMap, stats, isMultiplayer, socket, gameState]);
++  
++  // Handle Server adventureState
++  useEffect(() => {
++     if (isMultiplayer && adventureState && gameState === 'PLAYING') {
++        setActiveMaps(adventureState.activeMaps);
++        setMonth(adventureState.cycle - 1);
++        setCompletedThisMonth(adventureState.completedNpcs);
++        
++        if (adventureState.playerStats && adventureState.playerStats[playerId]) {
++           const s = adventureState.playerStats[playerId];
++           setStats({ trust: s.trust, population_saved: s.population_saved, cash: s.cash, rice: s.rice, gold: s.gold });
++        }
++     }
++  }, [isMultiplayer, adventureState, gameState, playerId]);
+ 
+   const startGame = (lvl: keyof typeof LEVELS) => {
+     soundEffects.playVictoryFanfare();
+@@ -66,9 +84,14 @@
+     setCompletedThisMonth([]);
+     
+-    const maps = JSON.parse(JSON.stringify(ALL_MAPS.slice(0, config.cityCount)));
+-    setActiveMaps(maps);
+-    setCurrentMap(maps[0].name);
++    if (isMultiplayer) {
++       // For multiplayer, activeMaps is from server (adventureState), wait for it.
++       setCurrentMap(ALL_MAPS[0].name);
++    } else {
++       const maps = JSON.parse(JSON.stringify(ALL_MAPS.slice(0, config.cityCount)));
++       setActiveMaps(maps);
++       setCurrentMap(maps[0].name);
++    }
+     setPlayerPos({ x: 2, y: 2 });
+   };
