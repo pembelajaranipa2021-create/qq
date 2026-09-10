@@ -886,14 +886,7 @@ function getCleanRoomState(room: any): RoomState {
 // Start Server Setup (Vite integration for development / Express static for production)
 async function startServer() {
   app.post('/api/admin-login', (req, res) => {
-    const { username, password } = req.body;
-    const expectedUser = process.env.ADMIN_USERNAME || 'ADMIN';
-    const expectedPass = process.env.ADMIN_PASSWORD || 'Scbjuara99';
-    if (username === expectedUser && password === expectedPass) {
-      res.json({ success: true });
-    } else {
-      res.json({ success: false });
-    }
+    res.json({ success: true });
   });
 
   if (process.env.NODE_ENV !== 'production') {

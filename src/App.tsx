@@ -46,11 +46,6 @@ export default function App() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState<boolean>(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState<boolean>(false);
   const [isCertificateOpen, setIsCertificateOpen] = useState<boolean>(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(false);
-  const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
-  const [adminUsername, setAdminUsername] = useState<string>('');
-  const [adminPassword, setAdminPassword] = useState<string>('');
-  const [pendingRoomType, setPendingRoomType] = useState<'millionaire' | 'adventure' | 'interactive_quiz' | null>(null);
 
   // Poll active live rooms on landing screen
   useEffect(() => {
@@ -247,41 +242,7 @@ export default function App() {
       setTimeout(() => setErrorMessage(''), 3000);
       return;
     }
-    if (isAdminLoggedIn) {
-      handleCreateRoom(gameType);
-    } else {
-      setPendingRoomType(gameType);
-      setShowAdminLogin(true);
-    }
-  };
-
-  const handleAdminLogin = async () => {
-    soundEffects.playClick();
-    try {
-      const res = await fetch('/api/admin-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: adminUsername, password: adminPassword })
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        setIsAdminLoggedIn(true);
-        setShowAdminLogin(false);
-        setAdminUsername('');
-        setAdminPassword('');
-        if (pendingRoomType) {
-          handleCreateRoom(pendingRoomType);
-          setPendingRoomType(null);
-        }
-      } else {
-        setErrorMessage('Username atau Password Admin salah!');
-        setTimeout(() => setErrorMessage(''), 3000);
-      }
-    } catch (e) {
-      setErrorMessage('Terjadi kesalahan koneksi server.');
-      setTimeout(() => setErrorMessage(''), 3000);
-    }
+    handleCreateRoom(gameType);
   };
 
   const handleJoinRoom = () => {
@@ -979,52 +940,6 @@ export default function App() {
         options={currentQuestion?.options}
       />
 
-      {showAdminLogin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#FDFCF0] border-4 border-[#3D405B] rounded-3xl p-6 sm:p-8 w-full max-w-sm shadow-[8px_8px_0px_#3D405B]">
-            <h2 className="text-xl font-black text-[#3D405B] mb-4 text-center">Login Admin Server</h2>
-            <p className="text-sm text-[#3D405B]/80 text-center mb-6 font-semibold">Hanya admin yang dapat membuat server baru.</p>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#3D405B] mb-1">Username Admin</label>
-                <input
-                  type="password"
-                  value={adminUsername}
-                  onChange={(e) => setAdminUsername(e.target.value)}
-                  className="w-full bg-white border-2 border-[#3D405B] rounded-xl px-4 py-2 text-sm font-bold text-[#3D405B] focus:outline-none focus:ring-4 focus:ring-[#E07A5F]/20"
-                  placeholder="Masukkan username"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-[#3D405B] mb-1">Password Admin</label>
-                <input
-                  type="password"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  className="w-full bg-white border-2 border-[#3D405B] rounded-xl px-4 py-2 text-sm font-bold text-[#3D405B] focus:outline-none focus:ring-4 focus:ring-[#E07A5F]/20"
-                  placeholder="Masukkan password"
-                />
-              </div>
-              
-              <div className="pt-2 flex gap-2">
-                <button
-                  onClick={() => setShowAdminLogin(false)}
-                  className="flex-1 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-black text-sm rounded-xl border-2 border-gray-400 transition-all"
-                >
-                  BATAL
-                </button>
-                <button
-                  onClick={handleAdminLogin}
-                  className="flex-1 py-2 bg-[#E07A5F] hover:bg-[#F2CC8F] text-white hover:text-[#3D405B] font-black text-sm rounded-xl border-2 border-[#3D405B] shadow-[2px_2px_0px_#3D405B] transition-all"
-                >
-                  LOGIN
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <CertificateModal
         isOpen={isCertificateOpen}
